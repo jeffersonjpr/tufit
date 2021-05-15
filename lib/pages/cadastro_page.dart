@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/interceptors/get_modifiers.dart';
+import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:tufit/controllers/autenticacao_controller.dart';
 
+enum SingingCharacter { mas, fem }
+
 class CadastroPage extends StatelessWidget {
-  String dropdownValue = 'Masculino';
   final controller = Get.put(AutenticacaoController());
   //implementar o acesso ao db
   //implementar o firebase.storage para guardar a imagem
 
   @override
+  SingingCharacter _character = SingingCharacter.mas;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -19,13 +23,11 @@ class CadastroPage extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : Form(
                 key: controller.formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: ListView(
                   children: [
                     Padding(
                       padding: EdgeInsets.all(24),
                       child: TextFormField(
-                        controller: controller.email,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Email',
@@ -43,7 +45,6 @@ class CadastroPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 24.0),
                       child: TextFormField(
-                        controller: controller.senha,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -77,32 +78,22 @@ class CadastroPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text('Genero'),
-                    DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: const Icon(Icons.arrow_downward),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.blue,
-                      ),
-                      onChanged: (String newValue) {
-                        dropdownValue = newValue;
-                      },
-                      items: <String>[
-                        'Masculino',
-                        'Feminino',
-                        'Helicopetero',
-                        'Monster Energy Drink'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                    RadioListTile<SingingCharacter>(
+                        title: const Text('Masculino'),
+                        value: SingingCharacter.mas,
+                        groupValue: _character,
+                        onChanged: (SingingCharacter value) {
+                          GetXState();
+                          //_character = value;
+                        }),
+                    RadioListTile<SingingCharacter>(
+                        title: const Text('Feminino'),
+                        value: SingingCharacter.fem,
+                        groupValue: _character,
+                        onChanged: (SingingCharacter value) {
+                          GetXState();
+                          //_character = value;
+                        }),
                     Padding(
                       padding: EdgeInsets.all(24),
                       child: TextFormField(
